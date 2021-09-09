@@ -6,6 +6,8 @@ from typing import List, Dict
 
 import requests
 
+import bitget.mix.order_api as bitget_sdk
+
 default_base_url = 'http://copytrading.xforceglobal.com'
 default_symbols = 'BTCUSDT,XRPUSDT,ETHUSDT'
 default_hours = 1
@@ -23,22 +25,22 @@ def send_orders_to_bitget_api(in_base_url: str, in_token: str, in_orders: List, 
         raise BaseException('no api password')
 
     # Create the api object to perform requests using the API credentials.
-    # bitget_sdk_order_api = bitget_sdk.OrderApi(api_key, api_secret, api_password, first=False)
+    bitget_sdk_order_api = bitget_sdk.OrderApi(api_key, api_secret, api_password, first=False)
 
     child_orders = []
 
     for order in in_orders:
         child_order_id = uuid.uuid4().hex
 
-        # response: Dict = bitget_sdk_order_api.place_order(symbol=order.symbol,
-        #                                                   marginCoin='USDT',
-        #                                                   size=order.size,
-        #                                                   side=order.side,  # 'open_long'
-        #                                                   orderType='market',  # 'market'
-        #                                                   price=order.price_avg,
-        #                                                   clientOrderId=child_order_id)
+        response: Dict = bitget_sdk_order_api.place_order(symbol=order.symbol,
+                                                          marginCoin='USDT',
+                                                          size=order.size,
+                                                          side=order.side,  # 'open_long'
+                                                          orderType='market',  # 'market'
+                                                          price=order.price_avg,
+                                                          clientOrderId=child_order_id)
 
-        response = {"data": {"clientOid": 'test', "orderId": 'test'}, "code": "00000"}
+        # response = {"data": {"clientOid": 'test', "orderId": 'test'}, "code": "00000"}
 
         # Check if request was successful and return data if everything was fine.
         if 'code' in response and int(response['code']) == 0:
