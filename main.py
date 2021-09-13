@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import configparser
 import getpass
 import json
@@ -32,12 +34,12 @@ def send_orders_to_bitget_api(in_base_url: str, in_token: str, in_orders: List, 
     for order in in_orders:
         child_order_id = uuid.uuid4().hex
 
-        response: Dict = bitget_sdk_order_api.place_order(symbol=order.symbol,
-                                                          marginCoin='USDT',
-                                                          size=order.size,
-                                                          side=order.side,  # 'open_long'
-                                                          orderType='market',  # 'market'
-                                                          price=order.price_avg,
+        response: Dict = bitget_sdk_order_api.place_order(symbol=order['symbol'],
+                                                          marginCoin=order['marginCoin'],
+                                                          size=order['size'],
+                                                          side=order['side'],
+                                                          orderType=order['orderType'],  # 'market',  # 'market'
+                                                          price=order['priceAvg'],
                                                           clientOrderId=child_order_id)
 
         # response = {"data": {"clientOid": 'test', "orderId": 'test'}, "code": "00000"}
@@ -221,7 +223,7 @@ if __name__ == '__main__':
 
     # Enter backend API email.
     if not config.email:
-        print('Please enter the admin email:')
+        print('Please enter the email:')
         config.email = input()
         if not config.email:
             print('Invalid email. Exiting.')
@@ -240,7 +242,7 @@ if __name__ == '__main__':
         print(f"Authentication failed. Exiting.")
         exit(1)
 
-    print(f"Authenticated, sending orders...")
+    print(f"Authenticated, getting orders...")
 
     # Get the past hours value.
     if not config.past_hours:
